@@ -75,7 +75,10 @@
         <script>
             window.onload=function(){
                 var userAgent = window.navigator.userAgent;
-                if(!userAgent.includes("IE")){alert("LITEバージョンはこのブラウザがサポートされていません。\n不具合が起こる可能性があります。")}
+                if(!userAgent.includes("IE")){
+                    var res = confirm("このブラウザはLITEエディションではサポートされていません。\n別のエディションを実行してください。")
+                    if(res)history.back()
+                }
             }
             function color16Check(elem,bool){
                 var str = elem.value
@@ -174,7 +177,7 @@
         </script>
     </head>
     <body style="background-color:rgb(0, 0, 81);overflow: hidden;">
-        <div style="text-align: center;font-size: 40px;background-color:darkslategrey;color:beige;height: 8%;">OnlineWebEditor-LITE　<span style="font-size:25px">Powered by Riyansu </span><img src="Logo3.png" style="height:60%;vertical-align:middle">　<span style="font-size:22px;vertical-align: bottom;">Ver.1.1.4</span>　<span style="font-size:20px;vertical-align: bottom;">SupportedBrowser: InternetExplorer</span></div>
+        <div style="text-align: center;font-size: 40px;background-color:darkslategrey;color:beige;height: 8%;">OnlineWebEditor-LITE　<span style="font-size:25px">Powered by Riyansu </span><img src="Logo3.png" style="height:60%;vertical-align:middle">　<span style="font-size:22px;vertical-align: bottom;">Ver.1.2.4</span>　<span style="font-size:20px;vertical-align: bottom;">SupportedBrowser: InternetExplorer</span></div>
         <textarea class="MainEditor" id="MainEditorArea" wrap="off"></textarea>
         <span style="font-size:30px;color: white;background-color:cadetblue;">Color16:#<input type="input" id="ColorChecker" style="height:4.5%;font-size:22px;width: 100px;vertical-align: top;background-color: rgb(119, 180, 182);color: white;border-radius: 3px;text-transform: uppercase;" maxlength="6" oninput="if(this.value.length == 6){color16Check(this,false)}else{document.getElementById('showColor').style.backgroundColor='cadetblue'}">
         <button type="button" class="colorChecker" id="showColor" onclick="color16Check(document.getElementById('ColorChecker'),true)"></button></span>
