@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>OnlineWebEditor-LITE</title>
+        <title>OnlineWebEditor-LITE by Riyansu</title>
         <meta charset="utf-8">
         <style>
             textarea.MainEditor{
@@ -13,31 +13,56 @@
                 font-family:sans-serif;
                 font-weight: bold;
             }
-            textarea.MainEditor::-webkit-scrollbar {
-                width: 20px;
-                height: 20px;
-            }
-            textarea.MainEditor::-webkit-scrollbar-track {
-                border-radius: 5px;
-                background: #025;
-            }
-            textarea.MainEditor::-webkit-scrollbar-thumb {
-                border-radius: 5px;
-                background: #88cccc;
-                cursor: pointer;
-            }
             body{
                 cursor:default;
                 user-select: none;
+                -ms-user-select: none;
             }
             img {
                 pointer-events: none;
             }
+            button.saveBtn{
+                width: 300px;height:5%;
+                font-size: 25px;
+                vertical-align: top;
+                border-radius: 3px;
+                border: white 1 solid;
+                background-color: rgb(63, 159, 255);
+                box-shadow: 1px 1px #bfbfbf;
+            }
+            button.saveBtn:hover{
+                background-color:deepskyblue;
+            }
+            button.saveBtn:active{
+                background-color:rgb(120, 167, 255);
+                box-shadow: 0px 0px #bfbfbf;
+            }
+            button.colorChecker{
+                width: 40px;height:5%;
+                border: white 0.1px solid;
+                border-radius: 1px;
+                vertical-align: top;
+                background-color: cadetblue;
+            }
+            button.colorChecker:hover{
+                cursor:copy
+            }
+            button.colorChecker:active{
+                border: black 0.2px solid;
+            }
         </style>
         <script>
-            function color16Check(str){
+            function color16Check(elem,bool){
+                var str = elem.value
                 var isColor16CheckerStr = str.replace(/1/gi,"").toString().replace(/2/gi,"").toString().replace(/3/gi,"").toString().replace(/4/gi,"").toString().replace(/5/gi,"").toString().replace(/6/gi,"").toString().replace(/7/gi,"").toString().replace(/8/gi,"").toString().replace(/9/gi,"").toString().replace(/0/gi,"").toString().replace(/a/gi,"").toString().replace(/b/gi,"").toString().replace(/c/gi,"").toString().replace(/d/gi,"").toString().replace(/e/gi,"").toString().replace(/f/gi,"");
-                if(isColor16CheckerStr == "")document.getElementById('showColor').style.backgroundColor=str
+                if(isColor16CheckerStr == ""){
+                    document.getElementById('showColor').style.backgroundColor=str
+                    if(bool){
+                        elem.select()
+                        document.execCommand('Copy');
+                        elem.selectionStart = elem.selectionEnd
+                    }
+                }
             }
             function MEAreaKeyDown(event,elem){
                 var keyCode = event.keyCode;
@@ -45,13 +70,13 @@
                 var cursorPosition = elem.selectionStart;
                 var leftString = elem.value.substr(0, cursorPosition);
                 var rightString = elem.value.substr(cursorPosition, elem.value.length);
-                
+                console.log(keyCode)
                 if(keyCode === 9) {//9=>Tabキー
                     event.preventDefault();  // 元の挙動を止める
                     // textareaの値をカーソル左の文字列 + タブスペース + カーソル右の文字列にする
-                    elem.value = leftString + "    " + rightString;
+                    elem.value = leftString + "\t" + rightString;
                     // カーソル位置をタブスペースの後ろにする
-                    elem.selectionEnd = cursorPosition + 4;
+                    elem.selectionEnd = cursorPosition + 1;
                 }
                 else if(keyVal === "<") {
                     event.preventDefault();  // 元の挙動を止める
@@ -74,6 +99,11 @@
                     // カーソル位置をタブスペースの後ろにする
                     elem.selectionEnd = cursorPosition + 1;
                 }
+                else if(keyCode === 13) {//9=>Tabキー
+                    event.preventDefault();  // 元の挙動を止める
+                    elem.value = leftString + "\n" + rightString;
+                    elem.selectionEnd = cursorPosition + 1;
+                }
             }
             function replace()
             {
@@ -91,17 +121,18 @@
         </script>
     </head>
     <body style="background-color:rgb(0, 0, 81);overflow: hidden;">
-        <div style="text-align: center;font-size: 40px;background-color:darkslategrey;color:beige;height: 8%;">OnlineWebEditor-LITE　<span style="font-size:25px">Powered by Riyansu </span><img src="Logo3.png" style="height:60%;vertical-align:middle"></div>
+        <div style="text-align: center;font-size: 40px;background-color:darkslategrey;color:beige;height: 8%;">OnlineWebEditor-LITE　<span style="font-size:25px">Powered by Riyansu </span><img src="Logo3.png" style="height:60%;vertical-align:middle">　<span style="font-size:22px;vertical-align: bottom;">Ver.1.0.5</span>　<span style="font-size:20px;vertical-align: bottom;">Supported: InternetExplorer</span></div>
         <textarea class="MainEditor" id="MainEditorArea" wrap="off"></textarea>
-        <span style="font-size:30px;color: white;background-color:cadetblue;">Color16Check:#<input type="input" id="ColorChecker" style="height:4.5%;font-size:22px;width: 100px;vertical-align: top;background-color: rgb(119, 180, 182);color: white;border: white 1px solid;border-radius: 3px;" maxlength="6" oninput="if(this.value.length == 6)color16Check(this.value)"> <span style="border: white 0.1px solid;border-radius: 1px;vertical-align: top;" id="showColor">　　</span></span>
+        <span style="font-size:30px;color: white;background-color:cadetblue;">Color16:#<input type="input" id="ColorChecker" style="height:4.5%;font-size:22px;width: 100px;vertical-align: top;background-color: rgb(119, 180, 182);color: white;border: white 1px solid;border-radius: 3px;text-transform: uppercase;" maxlength="6" oninput="if(this.value.length == 6){color16Check(this,false)}else{document.getElementById('showColor').style.backgroundColor='cadetblue'}">
+        <button type="button" class="colorChecker" id="showColor" onclick="color16Check(document.getElementById('ColorChecker'),true)"></button></span>
         <span style="font-size:30px;color: white;background-color:darkseagreen;">
             Replace:
-            <input type="input" id="replaceBefore" style="height:4.5%;font-size:22px;width: 300px;vertical-align: top;background-color: rgb(159, 202, 159);color: white;border: white 1px solid;border-radius: 3px;">
+            <input type="input" id="replaceBefore" style="height:4.5%;font-size:22px;width: 320px;vertical-align: top;background-color: rgb(159, 202, 159);color: white;border: white 1px solid;border-radius: 3px;">
             >
-            <input type="input" id="replaceAfter" style="height:4.5%;font-size:22px;width: 300px;vertical-align: top;background-color: rgb(159, 202, 159);color: white;border: white 1px solid;border-radius: 3px;">
+            <input type="input" id="replaceAfter" style="height:4.5%;font-size:22px;width: 320px;vertical-align: top;background-color: rgb(159, 202, 159);color: white;border: white 1px solid;border-radius: 3px;">
             <button type="button" onclick="replace()" style="width: 40px;height:5%;font-size: 25px;vertical-align: top;border-radius: 3px;border: red 1 solid;background-color:antiquewhite;">●</button>
         </span>　　
-        <button type="button" onclick="SaveCode(this)" style="width: 300px;height:5%;font-size: 25px;vertical-align: top;border-radius: 3px;border: white 1 solid;background-color:deepskyblue;">SAVE(COPY)</button>
+        <button type="button" class="saveBtn" onclick="SaveCode(this)">SAVE(COPY)</button>
         <script>
             document.getElementById("MainEditorArea").onkeydown = function(event) {MEAreaKeyDown(event, this);}
         </script>
