@@ -117,9 +117,9 @@
                 if(keyCode === 9) {//9=>Tabキー
                     event.preventDefault();  // 元の挙動を止める
                     // textareaの値をカーソル左の文字列 + タブスペース + カーソル右の文字列にする
-                    elem.value = leftString + "\t" + rightString;
+                    elem.value = leftString + "  " + rightString;
                     // カーソル位置をタブスペースの後ろにする
-                    elem.selectionEnd = cursorPosition + 1;
+                    elem.selectionEnd = cursorPosition + 2;
                 }
                 else if(keyVal === "<") {
                     event.preventDefault();  // 元の挙動を止める
@@ -198,7 +198,14 @@
         </script>
     </head>
     <body style="background-color:rgb(0, 0, 81);overflow: hidden;">
-        <div style="text-align: center;font-size: 40px;background-color:darkslategrey;color:beige;height: 8%;">OnlineWebEditor-LITE　<span style="font-size:25px">Powered by Riyansu </span><img src="Logo3.png" style="height:60%;vertical-align:middle">　<span style="font-size:22px;vertical-align: bottom;">Ver.1.4.2</span>　<span style="font-size:20px;vertical-align: bottom;">SupportedBrowser: InternetExplorer</span></div>
+        <div style="text-align: center;font-size: 40px;background-color:darkslategrey;color:beige;height: 8%;">
+            OnlineWebEditor-LITE-<span style="color:tomato">E</span>&nbsp;
+            <span style="font-size:25px">Powered by Riyansu </span>
+            <img src="Logo3.png" style="height:60%;vertical-align:middle">&nbsp;
+            <span style="font-size:22px;vertical-align: bottom;">Ver.E.4.3</span>&nbsp;
+            <span style="font-size:20px;vertical-align: bottom;">Supported: IE</span>&nbsp;　
+            <a href="Plus/index.html" style="font-size: 25px;color:aqua">VersionP</a>
+        </div>
         <textarea class="MainEditor" id="MainEditorArea" wrap="off"></textarea>
         <span style="font-size:30px;color: white;background-color:cadetblue;">Color16:#<input type="input" id="ColorChecker" style="height:4.5%;font-size:22px;width: 7%;vertical-align: top;background-color: rgb(119, 180, 182);color: white;border-radius: 3px;text-transform: uppercase;" maxlength="6" oninput="if(this.value.length == 6){color16Check(this,false)}else{document.getElementById('showColor').style.backgroundColor='cadetblue'}">
         <button type="button" class="colorChecker" id="showColor" onclick="color16Check(document.getElementById('ColorChecker'),true)"></button></span>
@@ -211,7 +218,6 @@
         </span>&nbsp;
         <button type="button" class="previewBtn" onclick="PreviewCode()">PREVIEW</button>
         <button type="button" class="keepBtn" onclick="KeepCode(true)" oncontextmenu="KeepCode(false);return false" id="keepButton">KEEP</button>
-        <!-- <input type="file" id="inputFile"> -->
         <button type="button" class="copyBtn" onclick="CopyCode()">COPY</button>
         <script>
             document.getElementById("MainEditorArea").onkeydown = function(event) {MEAreaKeyDown(event, this);}
