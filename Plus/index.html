@@ -24,49 +24,21 @@
             img {
                 pointer-events: none;
             }
-            button.keepBtn{
+            button.ctrlBtn{
                 width: 5%;height:5%;
                 font-size: 22px;
                 vertical-align: top;
                 border-radius: 2px;
-                border: white 1 solid;
-                background-color: rgb(63, 159, 255);
-                box-shadow: 1px 1px #bfbfbf;
+                border: rgb(255, 255, 255) 1 solid;
+                background-color: rgb(53, 63, 72);
+                color:white
             }
-            button.keepBtn:hover{
-                background-color:deepskyblue;
+            button.ctrlBtn:hover{
+                background-color:rgb(58, 81, 88);
             }
-            button.keepBtn:active{
-                background-color:rgb(120, 167, 255);
+            button.ctrlBtn:active{
+                background-color:rgb(69, 81, 102);
                 box-shadow: 0px 0px #bfbfbf;
-            }
-            button.copyBtn{
-                width: 6%;height:5%;
-                font-size: 22px;
-                vertical-align: top;
-                border-radius: 2px;
-                border: white 1 solid;
-                background-color: rgb(63, 255, 66);
-                box-shadow: 1px 1px #bfbfbf;
-            }
-            button.copyBtn:hover{
-                background-color:rgb(123, 255, 0);
-            }
-            button.copyBtn:active{
-                background-color:rgb(0, 220, 44);
-                box-shadow: 0px 0px #bfbfbf;
-            }
-            button.previewBtn{
-                width: 8%;height:5%;
-                font-size: 22px;
-                vertical-align: top;
-                border-radius: 2px;
-                border: white 1 solid;
-                background-color: rgb(255, 207, 63);
-                box-shadow: 1px 1px #bfbfbf;
-            }
-            button.previewBtn:hover{
-                background-color:rgb(229, 255, 0);
             }
             button.colorChecker{
                 width: 2%;height:5%;
@@ -297,9 +269,9 @@
                 <input type="input" id="replaceAfter" style="height:4.5%;font-size:22px;width: 20%;vertical-align: top;background-color: rgb(44, 54, 56);color: white;border-radius: 3px;">
                 <button type="button" onclick="replace()" style="width: 40px;height:5%;font-size: 25px;vertical-align: top;border-radius: 3px;border: red 1 solid;background-color:antiquewhite;">●</button>
             </span>&nbsp;
-            <button type="button" class="previewBtn" onclick="PreviewCode()">PREVIEW</button>
-            <button type="button" class="keepBtn" onclick="KeepCode(true)" oncontextmenu="KeepCode(false);return false" id="keepButton">KEEP</button>
-            <button type="button" class="copyBtn" onclick="CopyCode()">COPY</button>
+            <button type="button" class="ctrlBtn" style="width: 8%;" onclick="PreviewCode()">PREVIEW</button>
+            <button type="button" class="ctrlBtn" onclick="KeepCode(true)" oncontextmenu="KeepCode(false);return false" id="keepButton">KEEP</button>
+            <button type="button" class="ctrlBtn" onclick="CopyCode()">COPY</button>
         </div>
         
         <script>
