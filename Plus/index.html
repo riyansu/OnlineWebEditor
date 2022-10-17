@@ -5,7 +5,7 @@
         <style>
             textarea.MainEditor{
                 width: 100%;height: 88%;
-                background-color: rgb(10, 35, 40);
+                background-color: rgb(8, 38, 54);
                 color: white;
                 font-size: 25px;
                 resize: none;
@@ -89,43 +89,41 @@
             }
         </style>
         <script>
+            let CodeArea;
+            window.onload=function(){CodeArea = document.getElementById("MainEditorArea")}
             /*IE用のスクリプトの関数*/
             function IEincludes(str,target)
             {
                 return str.indexOf(target)>-1
             }
             /*ここまで*/
-            var keep=""
+            let keep=""
             function getLine(getWholeLine)
             {
-                var elem = document.getElementById("MainEditorArea")
-                var cursorPos = elem.selectionStart+1;
+                const cursorPos = CodeArea.selectionStart+1;
                 //改行コード: ` にする↓
-                var Code = "`"+elem.value.replace(/`/g,"‘").toString().replace(/\n/g,"`")+"`"
-                var Line = ""
-                for(i = cursorPos;true;i--)
-                {
-                    if(IEincludes(Code.substr(i,cursorPos-i),"`"))
-                    {
-                        Line = Code.substr(i,cursorPos-i).replace(/`/g,"")
+                const Code = "`"+CodeArea.value.replace(/`/g,"‘").toString().replace(/\n/g,"`")+"`"
+                let Line = ""
+                for(i = cursorPos;true;i--){
+                    if(IEincludes(Code.substr(i,cursorPos-i),"`")){
+                        Line = Code.substr(i,cursorPos-i)
                         break
                     }
                 } 
                 if(getWholeLine){
-                    for(i = cursorPos;true;i++)
-                    {
-                        if(IEincludes(Code.substr(cursorPos,i-cursorPos),"`"))
-                        {
-                            Line += Code.substr(cursorPos,i-cursorPos).replace(/`/g,"")
+                    for(i = cursorPos;i<=Code.length;i++){
+                        if(IEincludes(Code.substr(cursorPos,i-cursorPos),"`")){
+                            Line += Code.substr(cursorPos,i-cursorPos)
                             break
                         }
                     } 
                 }
-                return Line
+                // alert(Line[1])
+                return Line.replace(/`/g,"").toString().replace(/‘/g,"`")
             }
             function color16Check(elem,bool){
-                var str = elem.value
-                var isColor16CheckerStr = str.replace(/1/gi,"").toString().replace(/2/gi,"").toString().replace(/3/gi,"").toString().replace(/4/gi,"").toString().replace(/5/gi,"").toString().replace(/6/gi,"").toString().replace(/7/gi,"").toString().replace(/8/gi,"").toString().replace(/9/gi,"").toString().replace(/0/gi,"").toString().replace(/a/gi,"").toString().replace(/b/gi,"").toString().replace(/c/gi,"").toString().replace(/d/gi,"").toString().replace(/e/gi,"").toString().replace(/f/gi,"");
+                const str = elem.value
+                const isColor16CheckerStr = str.replace(/1/gi,"").toString().replace(/2/gi,"").toString().replace(/3/gi,"").toString().replace(/4/gi,"").toString().replace(/5/gi,"").toString().replace(/6/gi,"").toString().replace(/7/gi,"").toString().replace(/8/gi,"").toString().replace(/9/gi,"").toString().replace(/0/gi,"").toString().replace(/a/gi,"").toString().replace(/b/gi,"").toString().replace(/c/gi,"").toString().replace(/d/gi,"").toString().replace(/e/gi,"").toString().replace(/f/gi,"");
                 if(isColor16CheckerStr == ""){
                     document.getElementById('showColor').style.backgroundColor=str
                     if(bool){
@@ -134,77 +132,80 @@
                         elem.selectionStart = elem.selectionEnd
                     }
                 }
+                alert(CodeArea.value)
             }
-            const aloneTags = ["img","input","br","hr","link","meta","area","base","col","embed","menuitem","param","source","track","wbr","basefont","frame","bgsound","keygen",""]
             
-            //コントロール系
-            function MEAreaKeyPress(event,elem){
-                var keyCode = event.keyCode;
-                var keyVal = event.key;
-                var cursorPosition = elem.selectionStart;
-                var leftString = elem.value.substr(0, cursorPosition);
-                var rightString = elem.value.substr(cursorPosition, elem.value.length);
+            const aloneTags = ["img","input","br","hr","link","meta","area","base","col","embed","menuitem","param","source","track","wbr","basefont","frame","bgsound","keygen",""]
+            //コントロール系(Enter,[Ctrl]Enter)
+            function MEAreaKeyPress(event){
+                const keyCode = event.keyCode;
+                let cursorPos = CodeArea.selectionStart;
+                let leftString = CodeArea.value.substr(0, cursorPos);
+                let rightString = CodeArea.value.substr(cursorPos, CodeArea.value.length);
+                let leftLine = getLine(false)
+                let wholeLine = getLine(true)
                 if(keyCode === 10){
                     event.preventDefault();
-                    const move = getLine(true).length-getLine(false).length
-                    elem.selectionStart = cursorPosition+move;
-                    cursorPosition = elem.selectionStart;
-                    leftString = elem.value.substr(0, cursorPosition);
-                    rightString = elem.value.substr(cursorPosition, elem.value.length);
-                    var lineSpace = ""
-                    if(getLine(false) == getLine(true)){
-                        var lineTxt = getLine(false)
-                        for(i = 0;i < lineTxt.length;i++){
-                            if(lineTxt.substr(i,1)==" ")lineSpace += " "
+                    const move = wholeLine.length-leftLine.length
+                    CodeArea.selectionStart = cursorPos+move;
+                    cursorPos = CodeArea.selectionStart;
+                    leftString = CodeArea.value.substr(0, cursorPos);
+                    rightString = CodeArea.value.substr(cursorPos, CodeArea.value.length);
+                    let lineSpace = ""
+                    leftLine = getLine(false)
+                    wholeLine = getLine(true)
+                    if(leftLine == wholeLine){
+                        for(i = 0;i < leftLine.length;i++){
+                            if(leftLine[i]==" ")lineSpace += " "
                             else break
                         }
                     }
-                    elem.value = leftString + "\n"+lineSpace+rightString;
-                    elem.selectionEnd = cursorPosition + 1+lineSpace.length;
+                    CodeArea.value = leftString + "\n"+lineSpace+rightString;
+                    CodeArea.selectionEnd = cursorPos + 1 + lineSpace.length;
                 }
                 else if(keyCode === 13) {//13=Enterキー
                     event.preventDefault();  // 元の挙動を止める
-                    var lineSpace = ""
-                    var move = 1
-                    var lineTxt = getLine(false)
+                    let lineSpace = ""
+                    let lineTxt = getLine(false)
                     for(i = 0;i < lineTxt.length;i++){
-                        if(lineTxt.substr(i,1)==" ")lineSpace += " "
+                        if(lineTxt[i]==" ")lineSpace += " "
                         else break
-                    }
-                    // if(elem.value.substr(cursorPosition-1,1)==">"){lineSpace+="  \n"+lineSpace;move = lineSpace.length-3}
-                    elem.value = leftString + "\n"+lineSpace+ rightString;
-                    // alert(lineSpace.length+"ずらします")
-                    elem.selectionEnd = cursorPosition +move+lineSpace.length;
+                    }   
+                    
+                    // if(CodeArea.value.substr(cursorPos-1,1)==">"){lineSpace+="  \n"+lineSpace;move = lineSpace.length/2+2}
+                    CodeArea.value = leftString + "\n"+lineSpace+ rightString;
+                    // CodeArea.selectionEnd = cursorPos +move+lineSpace.length;
+                    CodeArea.selectionEnd = cursorPos +1+lineSpace.length;
                 }
             }
             //入力系
-            function MEAreaKeyDown(event,elem){
-                var keyCode = event.keyCode;
-                var keyVal = event.key;
-                var cursorPosition = elem.selectionStart;
-                var leftString = elem.value.substr(0, cursorPosition);
-                var rightString = elem.value.substr(cursorPosition, elem.value.length);
-                if(keyCode === 9) {//9=>Tabキー
+            function MEAreaKeyDown(event){
+                const keyVal = event.key;
+                const cursorPos = CodeArea.selectionStart;
+                const leftString = CodeArea.value.substr(0, cursorPos);
+                const rightString = CodeArea.value.substr(cursorPos, CodeArea.value.length);
+                if(event.keyCode === 9) {//9=>Tabキー
                     event.preventDefault();  // 元の挙動を止める
                     // textareaの値をカーソル左の文字列 + タブスペース + カーソル右の文字列にする
-                    elem.value = leftString + "  " + rightString;
+                    CodeArea.value = leftString + "  " + rightString;
                     // カーソル位置をタブスペースの後ろにする
-                    elem.selectionEnd = cursorPosition + 2;
+                    CodeArea.selectionEnd = cursorPos + 2;
                 }
                 else if(keyVal === ">") {
                     event.preventDefault();
                     const lineTxt = getLine(false)//>の前のラインを全て取得
-                    var tagStart = 0
-                    var tagName = ""
-                    var addTxt = ">"
-                    var BREAK = false
+                    let tagStart = 0
+                    let tagName = ""
+                    let addTxt = ">"
+                    let BREAK = false
                     for(i = lineTxt.length;true;i--)
                     {
-                        if(lineTxt.substr(i-1,1)=="<"){
+                        const leftChar = lineTxt[i-1]
+                        if(leftChar=="<"){
                             tagStart = lineTxt.length - i;
                             break
                         }
-                        if(lineTxt.substr(i-1,1)==">" || i <= 0){
+                        else if(leftChar==">" || i <= 0){
                             BREAK = true;
                             break
                         }
@@ -212,65 +213,56 @@
                     if(!BREAK){
                         for(j = lineTxt.length-tagStart;j < lineTxt.length;j++)
                         {
-                            if(lineTxt.substr(j,1)==" ")break
-                            else tagName += lineTxt.substr(j,1)
+                            if(lineTxt[j]==" ")break
+                            else tagName += lineTxt[j]
                         }
-                        if(!IEincludes(aloneTags,tagName) && !IEincludes(tagName,"/"))addTxt = "></"+tagName+">"
+                        if(!IEincludes(aloneTags,tagName) && !IEincludes(tagName,"/") && tagName.replace(/[a-zA-Z]/g,"").toString().replace(/\d/g,"")=="")addTxt = "></"+tagName+">"
                     }
-                    
-                    elem.value = leftString + addTxt + rightString;
-                    elem.selectionEnd = cursorPosition+1;
+                    CodeArea.value = leftString + addTxt + rightString;
+                    CodeArea.selectionEnd = cursorPos+1;
                 }
                 else if(keyVal === "{") {
                     event.preventDefault();  // 元の挙動を止める
-                    // textareaの値をカーソル左の文字列 + {} + カーソル右の文字列にする
-                    elem.value = leftString + "{}" + rightString;
-                    // カーソル位置をタブスペースの後ろにする
-                    elem.selectionEnd = cursorPosition + 1;
+                    CodeArea.value = leftString + "{}" + rightString;
+                    CodeArea.selectionEnd = cursorPos + 1;
                 }
                 else if(keyVal === "[") {
                     event.preventDefault();  // 元の挙動を止める
-                    // textareaの値をカーソル左の文字列 + {} + カーソル右の文字列にする
-                    elem.value = leftString + "[]" + rightString;
-                    // カーソル位置をタブスペースの後ろにする
-                    elem.selectionEnd = cursorPosition + 1;
+                    CodeArea.value = leftString + "[]" + rightString;
+                    CodeArea.selectionEnd = cursorPos + 1;
                 }
                 else if(keyVal === "(") {
                     event.preventDefault();  // 元の挙動を止める
-                    // textareaの値をカーソル左の文字列 + {} + カーソル右の文字列にする
-                    elem.value = leftString + "()" + rightString;
-                    // カーソル位置をタブスペースの後ろにする
-                    elem.selectionEnd = cursorPosition + 1;
+                    CodeArea.value = leftString + "()" + rightString;
+                    CodeArea.selectionEnd = cursorPos + 1;
                 }
                 else if(keyVal === '"') {
                     event.preventDefault();  // 元の挙動を止める
-                    // textareaの値をカーソル左の文字列 + {} + カーソル右の文字列にする
-                    elem.value = leftString + '"'+'"' + rightString;
-                    // カーソル位置をタブスペースの後ろにする
-                    elem.selectionEnd = cursorPosition + 1;
+                    CodeArea.value = leftString + '""' + rightString;
+                    CodeArea.selectionEnd = cursorPos + 1;
                 }
                 else if(keyVal === "'") {
                     event.preventDefault();  // 元の挙動を止める
-                    // textareaの値をカーソル左の文字列 + {} + カーソル右の文字列にする
-                    elem.value = leftString + "'"+"'" + rightString;
-                    // カーソル位置をタブスペースの後ろにする
-                    elem.selectionEnd = cursorPosition + 1;
+                    const leftChar = leftString[leftString.length-1]
+                    if(leftChar=="=" || leftChar==":" || leftChar==" " || leftChar=="(")CodeArea.value = leftString + "''" + rightString;
+                    else CodeArea.value = leftString + "'" + rightString;
+                    CodeArea.selectionEnd = cursorPos + 1;
                 }
             }
             function replace()
             {
-                var Before = document.getElementById('replaceBefore').value
-                var After = document.getElementById('replaceAfter').value
-                document.getElementById('MainEditorArea').value = document.getElementById('MainEditorArea').value.replace(Before,After)
+                const Before = document.getElementById('replaceBefore').value
+                const After = document.getElementById('replaceAfter').value
+                CodeArea.value = CodeArea.value.replace(Before,After)
             }
             function KeepCode(save){
-                if(save){keep = document.getElementById('MainEditorArea').value}
-                else document.getElementById('MainEditorArea').value=keep
+                if(save){keep = CodeArea.value}
+                else CodeArea.value=keep
             }
             function PreviewCode()
             {
-                var Code = document.getElementById("MainEditorArea").value
-                if((IEincludes(Code,"<img")||IEincludes(Code,"<IMG"))&&IEincludes(Code,'src="'))alert("ローカルのファイルは読み込むことが\nできませんのでご了承ください。")
+                const Code = document.getElementById("MainEditorArea").value
+                if(IEincludes(Code,'src="')||IEincludes(Code,'href="'))alert("ローカルのファイルは読み込むことが\nできませんのでご了承ください。")
                 var preview = window.open();
                 preview.document.open();
                 preview.document.write(Code);
@@ -278,10 +270,9 @@
             }
             function CopyCode()
             {
-                var elem = document.getElementById('MainEditorArea')
-                elem.select();
+                CodeArea.select();
                 document.execCommand('Copy');
-                elem.selectionEnd = elem.selectionStart
+                CodeArea.selectionEnd = CodeArea.selectionStart
             }
         </script>
     </head>
@@ -290,10 +281,11 @@
             OnlineWebEditor-LITE-<span style="color:aqua">P</span>&nbsp;
             <span style="font-size:25px">Powered by Riyansu </span>
             <img src="../Logo3.png" style="height:60%;vertical-align:middle">&nbsp;
-            <span style="font-size:22px;vertical-align: bottom;">Ver.P.1.1</span>&nbsp;
+            <span style="font-size:22px;vertical-align: bottom;">Ver.P.2.6</span>&nbsp;
             <span style="font-size:20px;vertical-align: bottom;">Supported: IE</span>&nbsp;　
             <a href="../index.html" style="font-size: 25px;color:tomato">VersionE</a>
         </div>
+        <textarea class="MainEditor" id="MainEditorArea" wrap="off"></textarea>
         <span style="font-size:30px;color: white;background-color:cadetblue;">Color16:#<input type="input" id="ColorChecker" style="height:4.5%;font-size:22px;width: 7%;vertical-align: top;background-color: rgb(119, 180, 182);color: white;border-radius: 3px;text-transform: uppercase;" maxlength="6" oninput="if(this.value.length == 6){color16Check(this,false)}else{document.getElementById('showColor').style.backgroundColor='cadetblue'}">
         <button type="button" class="colorChecker" id="showColor" onclick="color16Check(document.getElementById('ColorChecker'),true)"></button></span>
         <span style="font-size:30px;color: white;background-color:darkseagreen;">
@@ -306,10 +298,9 @@
         <button type="button" class="previewBtn" onclick="PreviewCode()">PREVIEW</button>
         <button type="button" class="keepBtn" onclick="KeepCode(true)" oncontextmenu="KeepCode(false);return false" id="keepButton">KEEP</button>
         <button type="button" class="copyBtn" onclick="CopyCode()">COPY</button>
-        <textarea class="MainEditor" id="MainEditorArea" wrap="off"></textarea>
         <script>
-            document.getElementById("MainEditorArea").onkeypress = function(event) {MEAreaKeyPress(event, this);}
-            document.getElementById("MainEditorArea").onkeydown = function(event) {MEAreaKeyDown(event, this);}
+            document.getElementById("MainEditorArea").onkeypress = function(event) {MEAreaKeyPress(event);}
+            document.getElementById("MainEditorArea").onkeydown = function(event) {MEAreaKeyDown(event);}
         </script>
     </body>
 </html>
